@@ -37,6 +37,8 @@ class ScanDetector(BaseDetector):
         if observation.category != "packet_summary":
             return []
         payload = observation.payload
+        if payload.get("is_local_source"):
+            return []
         src_ip = str(payload.get("src_ip", "unknown"))
         port = int(payload.get("dst_port", 0))
         flags = str(payload.get("flags", ""))

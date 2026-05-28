@@ -33,6 +33,17 @@ class DDoSDetector(BaseDetector):
     async def process(self, observation: RawObservation) -> List[SuspiciousEvent]:
         if observation.category != "packet_summary":
             return []
+        if observation.payload.get("is_local_source"):
+            return []
+        protocol = str(observation.payload.get("protocol", "UNKNOWN"))
+        flags = str(observation.payload.get("flags", ""))
+        src_port = int(observation.payload.get("src_port", 0) or 0)
+        if protocol == "TCP" and ("S" not in flags or "A" in flags):
+            return []
+        if protocol == "UDP" and src_port in {53, 123, 443, 853}:
+            return []
+        if protocol not in {"TCP", "UDP", "ICMP"}:
+            return []
         src_ip = str(observation.payload.get("src_ip", "unknown"))
         now = datetime.now(timezone.utc)
         bucket = self.packet_counts[src_ip]
@@ -46,7 +57,6 @@ class DDoSDetector(BaseDetector):
         if src_ip in self.alerted_sources:
             return []
         self.alerted_sources.add(src_ip)
-        protocol = observation.payload.get("protocol", "UNKNOWN")
         threshold_ratio = len(bucket) / max(1, self.settings.ddos_packet_threshold)
         if threshold_ratio >= 5:
             score = score_bundle("critical", 92)
