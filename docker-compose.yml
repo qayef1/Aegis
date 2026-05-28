@@ -1,0 +1,45 @@
+services:
+  aegisai-core:
+    build: .
+    container_name: aegisai-core
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - /var/log:/host/var/log:ro
+      - ${HOST_USER_HOME}/.bash_history:/root/.bash_history:ro
+      - ${HOST_USER_HOME}/.zsh_history:/root/.zsh_history:ro
+    network_mode: host
+    restart: unless-stopped
+    depends_on:
+      - ollama
+      - vector-db
+
+  vector-db:
+    image: chromadb/chroma:0.5.23
+    container_name: aegisai-chroma
+    volumes:
+      - ./data/chroma-service:/chroma/chroma
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: aegisai-ollama
+    volumes:
+      - ./data/ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+
+  vulnerable-webapp:
+    build: .
+    container_name: aegisai-vuln-webapp
+    command: ["python", "app/testing/vulnerable_webapp/app.py"]
+    environment:
+      AEGISAI_WEBAPP_LOG: /data/logs/vulnerable_webapp.log
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./logs:/data/logs
+    restart: unless-stopped

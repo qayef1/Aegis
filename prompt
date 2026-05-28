@@ -1,0 +1,1083 @@
+You are a world-class SOC architect, DFIR engineer, malware analyst, SIEM engineer, backend engineer, AI engineer, Linux security engineer, and DevOps engineer.
+
+Your task is to design and build a COMPLETE enterprise-style AI-powered SOC monitoring and threat detection platform using Python and local LLM inference with Llama3 via Ollama.
+And for better compatibility, please make it run on docker
+
+This system must resemble a lightweight modern AI-SIEM/XDR platform.
+
+The implementation must be REAL, modular, scalable, production-style, and runnable on Ubuntu Linux.
+
+Additional Note :
+- Make README.md that explain how to use, and simply tell how the code work
+- Make ARCHITECTURE.md that explain heavily about every single line you build
+- Make INSTALLATION.md to tell how to install and configure
+
+========================================================
+PROJECT NAME
+========================================================
+
+AegisAI — Autonomous AI-Powered SOC/XDR Platform
+
+========================================================
+CORE VISION
+========================================================
+
+The system continuously monitors:
+- network traffic
+- live connections
+- system logs
+- authentication activity
+- package installations/removals
+- privilege escalation
+- suspicious commands
+- outbound traffic
+- web application authentication attempts
+- user behavior
+- attack chains
+
+The AI layer (Llama3) must correlate suspicious events into human-readable attack narratives., beside that, still give raw proof of from the log, or any kind as a proof of correlation generated
+
+The system acts like an AI SOC analyst.
+
+========================================================
+CRITICAL ARCHITECTURE RULES
+========================================================
+
+IMPORTANT:
+
+The LLM MUST NEVER process all raw logs directly.
+
+Correct architecture:
+
+Raw Data Sources
+      ↓
+Collectors
+      ↓
+Detection Engines
+      ↓
+Correlation Engine
+      ↓
+Suspicious Event Objects
+      ↓
+Llama3 AI Reasoning
+      ↓
+Alerting / Reporting
+
+The LLM ONLY receives summarized suspicious events.
+
+========================================================
+MAIN FEATURES
+========================================================
+
+The platform MUST detect:
+
+--------------------------------------------------------
+1. SSH/FTP/SFTP/TELNET BRUTE FORCE
+--------------------------------------------------------
+
+Detect:
+- repeated failed login attempts
+- repeated invalid usernames
+- distributed brute force attempts
+- credential stuffing behavior
+
+Monitor:
+- SSH
+- FTP
+- SFTP
+- Telnet
+- SMB (optional)
+
+Monitor:
+- auth.log
+- journalctl
+- service logs
+
+========================================================
+2. WEB APPLICATION BRUTE FORCE
+========================================================
+
+Create a SAMPLE vulnerable web application for testing.
+
+Requirements:
+- Flask-based login page
+- intentionally simple authentication
+- detailed logging
+- rate limit disabled
+- logs stored in dedicated file
+
+Detection engine must detect:
+- repeated POST login attempts
+- multiple usernames from same IP
+- credential stuffing
+- session abuse
+
+Provide:
+- sample attack scripts
+- hydra examples
+- curl examples
+
+========================================================
+3. PORT SCANNING DETECTION
+========================================================
+
+Detect:
+- SYN scans
+- FIN scans
+- Xmas scans
+- NULL scans
+- aggressive nmap scanning
+- service enumeration
+
+Use:
+- Scapy
+
+Track:
+- source IP
+- unique ports
+- scan speed
+- scan fingerprint
+
+========================================================
+4. DDOS / FLOOD DETECTION
+========================================================
+
+Detect:
+- SYN flood
+- ICMP flood
+- UDP flood
+- HTTP flood behavior
+
+Track:
+- packets per second
+- connection spikes
+- abnormal outbound traffic
+
+Use:
+- sliding time windows
+- rate analysis
+
+========================================================
+5. LIVE CONNECTION MONITORING
+========================================================
+
+Continuously monitor:
+- active TCP connections
+- active UDP connections
+- established sessions
+- outbound connections
+- suspicious remote destinations
+
+Use:
+- psutil
+- netstat parsing
+- ss command parsing
+
+Detect:
+- suspicious countries/IPs
+- unusual ports
+- beaconing behavior
+- reverse shell indicators
+
+========================================================
+6. LOGIN ANOMALY DETECTION
+========================================================
+
+Detect:
+- login from unknown IP
+- login from unusual ASN
+- impossible travel behavior
+- login outside normal hours
+- login from TOR/VPN (future-ready architecture)
+
+System must support:
+- baseline trusted IP configuration
+
+========================================================
+7. PRIVILEGE ESCALATION DETECTION
+========================================================
+
+Detect suspicious command chaining:
+
+Examples:
+- sudo after suspicious login
+- chmod +s
+- setcap abuse
+- usermod privilege changes
+- passwd changes
+- sudoers modification
+- persistence attempts
+
+Track suspicious chains like:
+scan
+↓
+login
+↓
+sudo
+↓
+wget
+↓
+chmod
+↓
+execution
+
+AI must correlate these into attack narratives.
+
+========================================================
+8. COMMAND EXECUTION MONITORING
+========================================================
+
+Monitor:
+- bash history
+- process execution
+- subprocess chains
+- dangerous commands
+
+Detect:
+- nc reverse shells
+- curl | bash
+- wget payloads
+- encoded payloads
+- suspicious python execution
+- crypto miners
+- persistence scripts
+
+========================================================
+9. PACKAGE INSTALL/UNINSTALL MONITORING
+========================================================
+
+Detect:
+- apt install
+- apt remove
+- dpkg changes
+- snap install
+- pip install
+- suspicious package installation
+
+Examples:
+- nmap suddenly installed
+- hydra installed
+- netcat installed
+- socat installed
+
+AI should determine:
+- legitimate admin behavior
+- suspicious post-compromise tooling
+
+========================================================
+10. DATA EXFILTRATION DETECTION
+========================================================
+
+Detect:
+- unusual outbound traffic
+- large outbound transfers
+- archive creation before transfer
+- suspicious uploads
+- encrypted outbound sessions
+
+Examples:
+- tar.gz creation
+- zip archive spikes
+- outbound SCP
+- outbound rsync
+- curl uploads
+
+Correlate:
+archive creation
+↓
+outbound connection
+↓
+data transfer spike
+
+========================================================
+11. FILE INTEGRITY MONITORING
+========================================================
+
+Detect:
+- sensitive file modifications
+- unauthorized binary replacement
+- persistence files
+- cronjob modifications
+- SSH key changes
+
+Monitor:
+- /etc/passwd
+- /etc/shadow
+- ~/.ssh/
+- crontab
+- systemd services
+
+========================================================
+12. PROCESS MONITORING
+========================================================
+
+Detect:
+- suspicious child processes
+- hidden processes
+- long-running unknown processes
+- crypto miners
+- privilege anomalies
+
+========================================================
+13. HISTORY MONITORING
+========================================================
+
+Monitor:
+- bash_history
+- zsh_history
+- command execution history
+
+Detect:
+- destructive commands
+- log wiping
+- persistence attempts
+- suspicious downloads
+
+========================================================
+14. AI CORRELATION ENGINE (MOST IMPORTANT)
+========================================================
+
+This is the heart of the platform.
+
+The AI must correlate multiple events into attack chains.
+
+Example:
+
+1. Port scan detected
+2. SSH brute force detected
+3. Successful login detected
+4. sudo command detected
+5. archive creation detected
+6. outbound SCP transfer detected
+
+AI output:
+
+"Possible full intrusion sequence detected.
+
+The attacker likely performed reconnaissance through port scanning, followed by SSH brute-force attempts.
+
+A successful login suggests credential compromise.
+
+Subsequent privilege escalation and archive creation indicate post-exploitation activity.
+
+Outbound SCP traffic suggests potential data exfiltration.
+
+Severity: Critical"
+
+========================================================
+15. MITRE ATT&CK MAPPING
+========================================================
+
+Map attacks automatically.
+
+Examples:
+- T1110 Brute Force
+- T1595 Active Scanning
+- T1078 Valid Accounts
+- T1041 Exfiltration Over C2 Channel
+- T1059 Command and Scripting Interpreter
+
+========================================================
+16. THREAT SCORING SYSTEM
+========================================================
+
+Every event must have:
+- severity
+- confidence score
+- risk score
+
+Example:
+{
+  "severity": "critical",
+  "confidence": 92,
+  "risk_score": 88
+}
+
+========================================================
+17. MEMORY & ATTACK HISTORY
+========================================================
+
+Store:
+- previous attackers
+- repeated IPs
+- previous attacks
+- recurring behavior
+- timeline correlation
+
+The AI must use historical context.
+
+========================================================
+18. REAL-TIME TELEGRAM ALERTING
+========================================================
+
+Send:
+- concise alerts
+- AI explanations
+- severity
+- MITRE mapping
+- recommendations
+
+Format professionally.
+
+========================================================
+19. DASHBOARD API
+========================================================
+
+Use FastAPI.
+
+Endpoints:
+- /health
+- /events
+- /alerts
+- /threats
+- /connections
+- /history
+- /attacks
+- /stats
+
+========================================================
+20. SETUP WIZARD (VERY IMPORTANT)
+========================================================
+
+Create setup.py.
+
+This file acts as an interactive installation wizard.
+
+The wizard MUST ask:
+- Telegram bot token
+- Telegram chat ID
+- normal login IP addresses
+- trusted admin usernames
+- normal working hours
+- network interfaces to monitor
+- thresholds
+- sensitive directories
+- allowed countries
+- SSH ports
+- web app ports
+
+The setup wizard must:
+- validate inputs
+- create .env automatically
+- initialize SQLite database
+- create folders
+- create default configs
+
+========================================================
+21. WEB UI (OPTIONAL BUT ARCHITECTURE READY)
+========================================================
+
+Architecture should support future web dashboard.
+
+========================================================
+22. PROJECT STRUCTURE
+========================================================
+
+project_root/
+│
+├── app/
+│   ├── main.py
+│   ├── config.py
+│   │
+│   ├── collectors/
+│   │   ├── auth_collector.py
+│   │   ├── packet_collector.py
+│   │   ├── process_collector.py
+│   │   ├── connection_collector.py
+│   │   ├── package_collector.py
+│   │   ├── history_collector.py
+│   │   └── webapp_collector.py
+│   │
+│   ├── detectors/
+│   │   ├── bruteforce_detector.py
+│   │   ├── scan_detector.py
+│   │   ├── ddos_detector.py
+│   │   ├── login_anomaly_detector.py
+│   │   ├── privilege_detector.py
+│   │   ├── exfiltration_detector.py
+│   │   ├── process_detector.py
+│   │   ├── package_detector.py
+│   │   ├── history_detector.py
+│   │   └── webapp_detector.py
+│   │
+│   ├── ai/
+│   │   ├── llm_engine.py
+│   │   ├── correlation_engine.py
+│   │   ├── prompts.py
+│   │   └── mitre_mapper.py
+│   │
+│   ├── alerts/
+│   │   ├── telegram.py
+│   │   └── formatter.py
+│   │
+│   ├── database/
+│   │   ├── db.py
+│   │   ├── models.py
+│   │   ├── history.py
+│   │   └── migrations.py
+│   │
+│   ├── api/
+│   │   └── routes.py
+│   │
+│   ├── utils/
+│   │   ├── logger.py
+│   │   ├── parser.py
+│   │   ├── geoip.py
+│   │   ├── risk.py
+│   │   └── helpers.py
+│   │
+│   └── testing/
+│       ├── vulnerable_webapp/
+│       ├── attack_scripts/
+│       └── traffic_simulators/
+│
+├── setup.py
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── README.md
+├── .env
+└── systemd/
+    └── aegisai.service
+
+========================================================
+23. AI REQUIREMENTS
+========================================================
+
+Use:
+- Ollama
+- llama3
+
+Endpoint:
+http://localhost:11434/api/generate
+
+The AI must:
+- explain threats
+- correlate attacks
+- provide recommendations
+- produce concise SOC-style summaries
+
+========================================================
+24. CODE REQUIREMENTS
+========================================================
+
+The implementation MUST:
+- be REAL runnable code
+- avoid pseudo-code
+- use type hints
+- use async patterns where useful
+- use clean architecture
+- include comments
+- include error handling
+- include logging
+- support Ubuntu Linux
+
+========================================================
+25. DEPLOYMENT REQUIREMENTS
+========================================================
+
+Provide:
+- Docker support
+- systemd service
+- startup scripts
+
+========================================================
+26. DEMO REQUIREMENTS
+========================================================
+
+The project must support realistic demonstrations:
+
+- nmap scanning
+- hydra SSH brute force
+- web login brute force
+- suspicious login
+- privilege escalation simulation
+- package installation detection
+- fake exfiltration simulation
+
+========================================================
+27. DEVELOPMENT PHASES
+========================================================
+
+PHASE 1:
+- auth log monitoring
+- Telegram alerts
+- brute force detection
+
+PHASE 2:
+- packet inspection
+- scan detection
+- DDoS detection
+
+PHASE 3:
+- privilege escalation monitoring
+- process monitoring
+- package monitoring
+
+PHASE 4:
+- AI correlation engine
+- MITRE mapping
+- attack chains
+
+PHASE 5:
+- API
+- persistence
+- Docker
+- systemd
+
+========================================================
+28. SEMI-FINAL GOAL
+========================================================
+
+The final platform should behave like:
+
+- mini SIEM
+- mini XDR
+- AI SOC analyst
+- AI DFIR assistant
+
+The system should continuously monitor a Linux machine and intelligently explain suspicious activity using Llama3.
+
+eh, tolong modifikasi dari ini, soalnya aku udah modifikasi sedikit prompt sebelumnya
+========================================================
+29. THREAT INTELLIGENCE, RAG, AND KNOWLEDGE AUGMENTATION
+========================================================
+
+IMPORTANT:
+
+The platform MUST include an advanced Threat Intelligence and Retrieval-Augmented Generation (RAG) subsystem.
+
+The purpose is to continuously enrich the AI SOC/XDR platform with real-world cybersecurity intelligence so the Llama3 reasoning engine becomes significantly more adaptive, context-aware, and capable of understanding evolving attack vectors.
+
+The AI should NOT rely only on its base model knowledge.
+
+The platform should behave like a continuously learning AI SOC analyst.
+
+========================================================
+PRIMARY GOALS
+========================================================
+
+The Threat Intelligence subsystem must:
+
+- collect cybersecurity intelligence from online references
+- parse and normalize threat information
+- create embeddings
+- store knowledge inside a local vector database
+- retrieve relevant threat intelligence dynamically during analysis
+- improve attack correlation reasoning
+- provide contextual evidence during AI explanations
+
+========================================================
+HIGH-LEVEL ARCHITECTURE
+========================================================
+
+Online Threat Sources
+        ↓
+Threat Collectors
+        ↓
+Document Cleaning & Parsing
+        ↓
+Normalization
+        ↓
+Chunking
+        ↓
+Embedding Engine
+        ↓
+Vector Database
+        ↓
+Retriever Engine
+        ↓
+Context Injection
+        ↓
+Llama3 Analysis
+
+========================================================
+THREAT INTELLIGENCE SOURCES
+========================================================
+
+The platform should support ingestion from:
+
+--------------------------------------------------------
+1. MITRE ATT&CK REFERENCES
+--------------------------------------------------------
+
+Collect:
+- techniques
+- tactics
+- procedures
+- ATT&CK descriptions
+- detection examples
+- mitigation recommendations
+
+Examples:
+- T1110 Brute Force
+- T1059 Command and Scripting Interpreter
+- T1078 Valid Accounts
+- T1041 Exfiltration Over C2 Channel
+
+========================================================
+2. CVE REFERENCES
+========================================================
+
+Collect:
+- CVE descriptions
+- affected software
+- severity
+- exploit patterns
+- exploitation methodologies
+
+========================================================
+3. MALWARE ANALYSIS REFERENCES
+========================================================
+
+Collect:
+- malware behavior patterns
+- persistence techniques
+- command-and-control behavior
+- exfiltration behavior
+- process injection indicators
+- credential theft techniques
+
+========================================================
+4. DFIR REFERENCES
+========================================================
+
+Collect:
+- incident response methodologies
+- forensic artifacts
+- attack chain examples
+- attacker tradecraft
+- log indicators
+- compromise indicators
+
+========================================================
+5. THREAT HUNTING REFERENCES
+========================================================
+
+Collect:
+- behavioral indicators
+- attacker workflows
+- lateral movement patterns
+- persistence indicators
+- privilege escalation indicators
+- beaconing patterns
+
+========================================================
+6. SIGMA/YARA REFERENCES
+========================================================
+
+Architecture must support:
+- Sigma rule ingestion
+- YARA references
+- detection signatures
+- IOC pattern references
+
+========================================================
+7. IOC REFERENCES
+========================================================
+
+Collect:
+- malicious IP indicators
+- malicious domains
+- suspicious hashes
+- known attacker infrastructure
+
+========================================================
+THREAT INTELLIGENCE MODULE STRUCTURE
+========================================================
+
+app/
+├── threat_intelligence/
+│   ├── collectors/
+│   │   ├── mitre_collector.py
+│   │   ├── cve_collector.py
+│   │   ├── malware_collector.py
+│   │   ├── sigma_collector.py
+│   │   ├── yara_collector.py
+│   │   └── ioc_collector.py
+│   │
+│   ├── processors/
+│   │   ├── cleaner.py
+│   │   ├── parser.py
+│   │   ├── chunker.py
+│   │   ├── embedder.py
+│   │   └── normalizer.py
+│   │
+│   ├── vectorstore/
+│   │   ├── chroma_store.py
+│   │   ├── retriever.py
+│   │   └── similarity_engine.py
+│   │
+│   ├── rag/
+│   │   ├── context_builder.py
+│   │   ├── retrieval_pipeline.py
+│   │   └── prompt_augmentation.py
+│   │
+│   └── updater.py
+
+========================================================
+VECTOR DATABASE REQUIREMENTS
+========================================================
+
+Use:
+- ChromaDB OR FAISS
+
+The vector database must store:
+- embeddings
+- metadata
+- ATT&CK mappings
+- source references
+- IOC tags
+- severity
+- categories
+
+========================================================
+EMBEDDING REQUIREMENTS
+========================================================
+
+Use:
+- sentence-transformers
+
+Recommended models:
+- all-MiniLM-L6-v2
+OR
+- bge-small-en
+
+========================================================
+DOCUMENT PROCESSING PIPELINE
+========================================================
+
+The ingestion pipeline MUST:
+
+1. Fetch documents
+2. Remove unnecessary HTML/noise
+3. Normalize text
+4. Split into chunks
+5. Generate embeddings
+6. Store in vector DB
+7. Store metadata
+8. Cache processed documents
+
+========================================================
+RAG RETRIEVAL ENGINE
+========================================================
+
+When suspicious events occur:
+
+1. detectors generate events
+2. correlation engine summarizes attack sequence
+3. retriever searches vector DB
+4. relevant threat intelligence is injected into prompt
+5. Llama3 reasons using contextual knowledge
+
+========================================================
+PROMPT AUGMENTATION REQUIREMENTS
+========================================================
+
+The final Llama3 prompt MUST contain:
+
+- suspicious event summary
+- correlated attack chain
+- raw evidence excerpts
+- historical attacker context
+- retrieved threat intelligence
+- MITRE ATT&CK references
+- IOC matches (if any)
+
+========================================================
+RAW EVIDENCE REQUIREMENT
+========================================================
+
+IMPORTANT:
+
+AI explanations MUST ALWAYS include raw evidence references.
+
+Examples:
+- relevant auth.log lines
+- suspicious command history
+- process execution evidence
+- connection evidence
+- packet summaries
+
+The AI must explain WHY it reached the conclusion.
+
+========================================================
+EXAMPLE AI ANALYSIS
+========================================================
+
+Observed Events:
+- Port scanning
+- SSH brute force
+- successful login
+- sudo usage
+- tar.gz archive creation
+- SCP outbound transfer
+
+Raw Evidence:
+- auth.log failed passwords
+- sudo execution history
+- SCP process execution
+- outbound connection logs
+
+Retrieved Threat Intelligence:
+- brute force often precedes credential compromise
+- archive staging frequently precedes exfiltration
+- SCP commonly abused for stealth exfiltration
+
+Expected AI Output:
+
+"Possible multi-stage intrusion sequence detected.
+
+The attacker likely performed reconnaissance through aggressive port scanning.
+
+Subsequent SSH brute-force attempts suggest credential attacks against exposed services.
+
+A successful login followed by sudo activity indicates potential account compromise and privilege escalation.
+
+The creation of compressed archives followed by SCP outbound transfer strongly suggests possible data staging and exfiltration.
+
+Evidence:
+- auth.log lines showing repeated failed SSH attempts
+- sudo execution after suspicious login
+- SCP outbound connection to external IP
+- archive creation observed before outbound transfer
+
+MITRE ATT&CK:
+- T1595 Active Scanning
+- T1110 Brute Force
+- T1078 Valid Accounts
+- T1560 Archive Collected Data
+- T1041 Exfiltration Over C2 Channel
+
+Severity: Critical"
+
+========================================================
+HISTORICAL MEMORY REQUIREMENTS
+========================================================
+
+The platform must maintain historical memory.
+
+Store:
+- attacker IP history
+- repeated attack patterns
+- historical correlations
+- previously seen IOC references
+- prior suspicious behavior
+
+The AI should leverage historical context during reasoning.
+
+========================================================
+AUTONOMOUS THREAT HUNTING (FUTURE-READY)
+========================================================
+
+Architecture should support future AI-driven investigation capabilities.
+
+Future examples:
+- AI initiating local scans
+- AI inspecting suspicious connections
+- AI querying process trees
+- AI performing controlled investigations
+
+IMPORTANT:
+Do NOT allow arbitrary command execution by default.
+
+Implement:
+- allowlisted tools
+- validation layers
+- safe execution framework
+
+========================================================
+LOCAL-FIRST REQUIREMENT
+========================================================
+
+The platform MUST support:
+- fully offline operation after synchronization
+- local embeddings
+- local vector DB
+- local Ollama inference
+- no cloud dependency
+
+========================================================
+UPDATE ENGINE
+========================================================
+
+Create:
+- scheduled threat intelligence synchronization
+- local caching
+- incremental updates
+- deduplication system
+
+========================================================
+DOCKER REQUIREMENTS
+========================================================
+
+The entire platform MUST run using Docker.
+
+Provide:
+- Dockerfile
+- docker-compose.yml
+- persistent volumes
+- isolated services
+
+Services should include:
+- aegisai-core
+- vector-db
+- ollama
+- optional vulnerable webapp
+
+Docker deployment must support:
+- Linux host monitoring
+- mounted log directories
+- mounted Docker socket if needed
+- persistent SQLite/vector storage
+
+========================================================
+DOCUMENTATION REQUIREMENTS
+========================================================
+
+Generate:
+
+1. README.md
+- quickstart
+- architecture overview
+- usage examples
+- demo scenarios
+- API usage
+- Telegram configuration
+
+2. INSTALLATION.md
+- Docker installation
+- Ollama setup
+- setup.py walkthrough
+- configuration steps
+- deployment examples
+
+3. ARCHITECTURE.md
+- detailed architecture explanation
+- event flow explanation
+- detector explanation
+- correlation engine explanation
+- RAG pipeline explanation
+- vector database explanation
+- AI reasoning flow
+- Docker orchestration explanation
+- every major module explained deeply
+
+========================================================
+FINAL GOAL
+========================================================
+
+The final platform should resemble:
+
+- AI-powered SIEM
+- AI-assisted XDR
+- autonomous SOC analyst
+- DFIR assistant
+- threat hunting platform
+- local cybersecurity intelligence engine
+- RAG-enhanced security analyst
+
+The system should continuously monitor Linux systems, intelligently detect suspicious activity, correlate attack chains, explain threats using Llama3, provide raw evidence, and leverage continuously updated threat intelligence knowledge.
+
+
+[JANGAN GANGGU GUGAT FILE BERNAMA prompt]

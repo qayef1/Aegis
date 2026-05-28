@@ -1,0 +1,55 @@
+# Local secrets and machine-specific config
+.env
+.env.*
+!.env.example
+
+# Runtime databases, vector stores, logs, and generated state
+data/
+logs/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Model and embedding caches
+models/
+model/
+.cache/
+cache/
+chroma/
+ollama/
+sentence_transformers/
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.onnx
+*.gguf
+
+# Python build/test/cache artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE/editor and OS noise
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Local agent/tooling scratch files
+.codex

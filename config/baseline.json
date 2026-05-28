@@ -1,0 +1,24 @@
+{
+  "trusted_ips": [
+    "127.0.0.1"
+  ],
+  "trusted_users": [
+    "root",
+    "ubuntu"
+  ],
+  "allowed_countries": [
+    "ID",
+    "SG",
+    "US"
+  ],
+  "interfaces": [
+    "eth0"
+  ],
+  "working_hours": "08:00-18:00",
+  "ssh_ports": [
+    "22"
+  ],
+  "webapp_ports": [
+    "5000"
+  ]
+}
